@@ -303,139 +303,140 @@ foreach ($liste_des_vsm as $vsm)
   // END Insert into gatekeepers_all (GATEWAYKEEPERS)
 
 
-  // Insert into dialplan_all
-  $i = 0;
-  foreach($dialplan_dump as $dialplan_line)
-  {
-    $i++;
-
-    //echo "<p>insertDialplan $i :</p>";
-    //var_dump($dialplan_line);
-    $query = "SELECT * FROM `voipswitch_all`.`dialingplan_all` WHERE `vsm_name` LIKE '".$vsm['vsm_name']."' AND `id_dialplan` = ".$dialplan_line['id_dialplan'].";";
-    //echo "<p>$query</p>";
-    $res_req=$dbw->query($query);
-    $select_result_dialingplan_all=$res_req->fetchAll(PDO::FETCH_BOTH);
-
-    // Recuperations de la route (trunk, client...)
-
-    $real_priority = "99999";
-    $trunk_sip  = "NSP";
-
-    // Recuperation du trunk
-
-    // MODIFICATIONS POUR VSM2, VSM3, VSM4, VSM5
-    if($dialplan_line['route_type'] == 5) { $dialplan_line['route_type'] = 32;}
-
-    $query = "SELECT `client_type_name` FROM `voipswitch_all`.`clienttypes_all` WHERE `id_client_type` = ".$dialplan_line['route_type']." ;";
-    //echo "<p>$query</p>";
-    $res_req=$dbw->query($query);
-    $select_result_dialplan=$res_req->fetchAll(PDO::FETCH_BOTH);
-    if(empty($select_result_dialplan))
-      { var_dump($dialplan_line);exit("IMPOSSSIBLE DE DETERMINER LE TYPE DU TRUNK SIP. Query : $query");}
-    else
-      {
-        if($select_result_dialplan[0][0] === "Wholesale clients") {$select_table = "gateways_all"; $select_column = "description"; $where_column = "id_route";}
-        elseif($select_result_dialplan[0][0] === "GW/Proxy clients") {$select_table = "gateways_all"; $select_column = "description"; $where_column = "id_route";}
-        elseif($select_result_dialplan[0][0] === "Retail clients") {$select_table = "clientsshared_all"; $select_column = "login"; $where_column = "id_client";}
-        elseif($select_result_dialplan[0][0] === "Client Common" ) {$select_table = "clientsshared_all"; $select_column = "login"; $where_column = "id_client";}
-        elseif($select_result_dialplan[0][0] === "GK/Registrar clients") {$select_table = "gatekeepers_all"; $select_column = "description"; $where_column = "id_route";}
-        else
-        {
-          $caller_trunk  = "NSP";
-          $caller_trunk_type = "NSP";
-        }
-
-        $trunk_type = $select_result_dialplan[0][0];
-        $query = "SELECT `".$select_column."` FROM `voipswitch_all`.`".$select_table."` WHERE `".$where_column."` = ".$dialplan_line['id_route']." AND `vsm_name` LIKE '".$vsm['vsm_name']."';";
-        //echo "<p style=\"color:red\">TRUNK SEARCH QUERY : $query</p>";
-        $res_req=$dbw->query($query);
-        $select_result=$res_req->fetchAll(PDO::FETCH_BOTH);
-        //var_dump($select_result);
-        if(empty($select_result)) {$trunk_sip = "DELETED";} // La GW ou le RC a ete efface depuis VSM
-        else {$trunk_sip  = $select_result[0][0];}
-
-
-      }
-
-    $tranche_debut = "NSP";
-    $tranche_fin = "NSP";
-    $tranche_nb_sda = "0";
-    $client = "NSP";
-    $commentaire = "NSP";
-
-    // END Recuperations de la route (trunk, client...)
-
-    if(empty($select_result_dialingplan_all)) // pas d'entree dans la table dialingplan_all
-    {
-      //echo "<p>Nouvelle entree</p>";
-      $query = "INSERT INTO `voipswitch_all`.`dialingplan_all`
-                                    (
-                                        `id_dialplan`,
-                                        `vsm_name`,
-                                        `telephone_number`,
-                                        `priority`,
-                                        `real_priority`,
-                                        `route_type`,
-                                        `tech_prefix`,
-                                        `dial_as`,
-                                        `id_route`,
-                                        `call_type`,
-                                        `type`,
-                                        `from_day`,
-                                        `to_day`,
-                                        `from_hour`,
-                                        `to_hour`,
-                                        `balance_share`,
-                                        `fields`,
-                                        `call_limit`,
-                                        `trunk_sip`,
-                                        `trunk_type`,
-                                        `tranche_debut`,
-                                        `tranche_fin`,
-                                        `tranche_nb_sda`,
-                                        `client`,
-                                        `commentaire`
-                                    )
-                          VALUES    (
-                                        '".$dialplan_line['id_dialplan']."',
-                                        '".$vsm['vsm_name']."',
-                                        '".$dialplan_line['telephone_number']."',
-                                        '".$dialplan_line['priority']."',
-                                        '".$real_priority."',
-                                        '".$dialplan_line['route_type']."',
-                                        '".$dialplan_line['tech_prefix']."',
-                                        '".$dialplan_line['dial_as']."',
-                                        '".$dialplan_line['id_route']."',
-                                        '".$dialplan_line['call_type']."',
-                                        '".$dialplan_line['type']."',
-                                        '".$dialplan_line['from_day']."',
-                                        '".$dialplan_line['to_day']."',
-                                        '".$dialplan_line['from_hour']."',
-                                        '".$dialplan_line['to_hour']."',
-                                        '".$dialplan_line['balance_share']."',
-                                        '".$dialplan_line['fields']."',
-                                        '".$dialplan_line['call_limit']."',
-                                        '".$trunk_sip."',
-                                        '".$trunk_type."',
-                                        '".$tranche_debut."',
-                                        '".$tranche_fin."',
-                                        '".$tranche_nb_sda."',
-                                        '".$client."',
-                                        '".$commentaire."'
-                                    )
-              ;";
-      //echo "<p>$query</p>";
-      if(($dbw->query($query)) === FALSE){echo "<p>INSERT NOK : QUERY : $query</p>"; exit(0);}
-      //else{echo "<p>INSERT OK QUERY : $query</p>";}
-
-    }
-
-
-
-  } // END foreach($dialplan_dump as $dialplan_line)
-
-
-  // ENDInsert into dialplan_all
+  // // Insert into dialplan_all
+  // $i = 0;
+  // foreach($dialplan_dump as $dialplan_line)
+  // {
+  //   $i++;
+  //
+  //
+  //   //echo "<p>insertDialplan $i :</p>";
+  //   //var_dump($dialplan_line);
+  //   $query = "SELECT * FROM `voipswitch_all`.`dialingplan_all` WHERE `vsm_name` LIKE '".$vsm['vsm_name']."' AND `id_dialplan` = ".$dialplan_line['id_dialplan'].";";
+  //   //echo "<p>$query</p>";
+  //   $res_req=$dbw->query($query);
+  //   $select_result_dialingplan_all=$res_req->fetchAll(PDO::FETCH_BOTH);
+  //
+  //   // Recuperations de la route (trunk, client...)
+  //
+  //   $real_priority = "99999";
+  //   $trunk_sip  = "NSP";
+  //
+  //   // Recuperation du trunk
+  //
+  //   // MODIFICATIONS POUR VSM2, VSM3, VSM4, VSM5
+  //   if($dialplan_line['route_type'] == 5) { $dialplan_line['route_type'] = 32;}
+  //
+  //   $query = "SELECT `client_type_name` FROM `voipswitch_all`.`clienttypes_all` WHERE `id_client_type` = ".$dialplan_line['route_type']." ;";
+  //   //echo "<p>$query</p>";
+  //   $res_req=$dbw->query($query);
+  //   $select_result_dialplan=$res_req->fetchAll(PDO::FETCH_BOTH);
+  //   if(empty($select_result_dialplan))
+  //     { var_dump($dialplan_line);exit("IMPOSSSIBLE DE DETERMINER LE TYPE DU TRUNK SIP. Query : $query");}
+  //   else
+  //     {
+  //       if($select_result_dialplan[0][0] === "Wholesale clients") {$select_table = "gateways_all"; $select_column = "description"; $where_column = "id_route";}
+  //       elseif($select_result_dialplan[0][0] === "GW/Proxy clients") {$select_table = "gateways_all"; $select_column = "description"; $where_column = "id_route";}
+  //       elseif($select_result_dialplan[0][0] === "Retail clients") {$select_table = "clientsshared_all"; $select_column = "login"; $where_column = "id_client";}
+  //       elseif($select_result_dialplan[0][0] === "Client Common" ) {$select_table = "clientsshared_all"; $select_column = "login"; $where_column = "id_client";}
+  //       elseif($select_result_dialplan[0][0] === "GK/Registrar clients") {$select_table = "gatekeepers_all"; $select_column = "description"; $where_column = "id_route";}
+  //       else
+  //       {
+  //         $caller_trunk  = "NSP";
+  //         $caller_trunk_type = "NSP";
+  //       }
+  //
+  //       $trunk_type = $select_result_dialplan[0][0];
+  //       $query = "SELECT `".$select_column."` FROM `voipswitch_all`.`".$select_table."` WHERE `".$where_column."` = ".$dialplan_line['id_route']." AND `vsm_name` LIKE '".$vsm['vsm_name']."';";
+  //       //echo "<p style=\"color:red\">TRUNK SEARCH QUERY : $query</p>";
+  //       $res_req=$dbw->query($query);
+  //       $select_result=$res_req->fetchAll(PDO::FETCH_BOTH);
+  //       //var_dump($select_result);
+  //       if(empty($select_result)) {$trunk_sip = "DELETED";} // La GW ou le RC a ete efface depuis VSM
+  //       else {$trunk_sip  = $select_result[0][0];}
+  //
+  //
+  //     }
+  //
+  //   $tranche_debut = "NSP";
+  //   $tranche_fin = "NSP";
+  //   $tranche_nb_sda = "0";
+  //   $client = "NSP";
+  //   $commentaire = "NSP";
+  //
+  //   // END Recuperations de la route (trunk, client...)
+  //
+  //   if(empty($select_result_dialingplan_all)) // pas d'entree dans la table dialingplan_all
+  //   {
+  //     //echo "<p>Nouvelle entree</p>";
+  //     $query = "INSERT INTO `voipswitch_all`.`dialingplan_all`
+  //                                   (
+  //                                       `id_dialplan`,
+  //                                       `vsm_name`,
+  //                                       `telephone_number`,
+  //                                       `priority`,
+  //                                       `real_priority`,
+  //                                       `route_type`,
+  //                                       `tech_prefix`,
+  //                                       `dial_as`,
+  //                                       `id_route`,
+  //                                       `call_type`,
+  //                                       `type`,
+  //                                       `from_day`,
+  //                                       `to_day`,
+  //                                       `from_hour`,
+  //                                       `to_hour`,
+  //                                       `balance_share`,
+  //                                       `fields`,
+  //                                       `call_limit`,
+  //                                       `trunk_sip`,
+  //                                       `trunk_type`,
+  //                                       `tranche_debut`,
+  //                                       `tranche_fin`,
+  //                                       `tranche_nb_sda`,
+  //                                       `client`,
+  //                                       `commentaire`
+  //                                   )
+  //                         VALUES    (
+  //                                       '".$dialplan_line['id_dialplan']."',
+  //                                       '".$vsm['vsm_name']."',
+  //                                       '".$dialplan_line['telephone_number']."',
+  //                                       '".$dialplan_line['priority']."',
+  //                                       '".$real_priority."',
+  //                                       '".$dialplan_line['route_type']."',
+  //                                       '".$dialplan_line['tech_prefix']."',
+  //                                       '".$dialplan_line['dial_as']."',
+  //                                       '".$dialplan_line['id_route']."',
+  //                                       '".$dialplan_line['call_type']."',
+  //                                       '".$dialplan_line['type']."',
+  //                                       '".$dialplan_line['from_day']."',
+  //                                       '".$dialplan_line['to_day']."',
+  //                                       '".$dialplan_line['from_hour']."',
+  //                                       '".$dialplan_line['to_hour']."',
+  //                                       '".$dialplan_line['balance_share']."',
+  //                                       '".$dialplan_line['fields']."',
+  //                                       '".$dialplan_line['call_limit']."',
+  //                                       '".$trunk_sip."',
+  //                                       '".$trunk_type."',
+  //                                       '".$tranche_debut."',
+  //                                       '".$tranche_fin."',
+  //                                       '".$tranche_nb_sda."',
+  //                                       '".$client."',
+  //                                       '".$commentaire."'
+  //                                   )
+  //             ;";
+  //     //echo "<p>$query</p>";
+  //     if(($dbw->query($query)) === FALSE){echo "<p>INSERT NOK : QUERY : $query</p>"; exit(0);}
+  //     //else{echo "<p>INSERT OK QUERY : $query</p>";}
+  //
+  //   }
+  //
+  //
+  //
+  // } // END foreach($dialplan_dump as $dialplan_line)
+  //
+  //
+  // // ENDInsert into dialplan_all
 
 
   // END INSERT INTO TABLES

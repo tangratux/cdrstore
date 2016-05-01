@@ -46,53 +46,53 @@ if(isset($_GET['journee']))
 echo "$journee"; //exit(0);
 
 //etablissement connection PDO with DevWeb pour les SELECT
-try {$dbw= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbw= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
 
 //etablissement connection PDO with DevWeb pour les REPLACE
-try {$dbr= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbr= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
 
 //etablissement 8 connection PDO with DevWeb for UPDATES
-try {$dbu1= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu1= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu2= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu2= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu3= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu3= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu4= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu4= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu5= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu5= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu6= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu6= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu7= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu7= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu8= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu8= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu9= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu9= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu10= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu10= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu11= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu11= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu12= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu12= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu13= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu13= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu14= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu14= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu15= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu15= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu16= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu16= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu17= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu17= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu18= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu18= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu19= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu19= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
-try {$dbu20= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbu20= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
 
 

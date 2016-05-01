@@ -7,7 +7,7 @@ echo "GET_DIALING_PLAN";
 
 
 //etablissement connection PDO with DevWeb
-try {$dbw= new PDO("mysql:host=91.230.169.100;dbname=voipswitch_all", 'root', 'vesnet@home');}
+try {$dbw= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
 
 

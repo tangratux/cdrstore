@@ -45,9 +45,9 @@ $smaller_date=$res_req->fetchAll(PDO::FETCH_BOTH);
 $smaller_date = $smaller_date[0][0];
 
 
-$journee = date_create_from_format('Y-M-j', '$smaller_date');
-$journee = $journee - 86400;
-$journee= $journee['year']."-".$journee['mon']."-".$journee['mday'];
+$journee = date_create("$smaller_date");
+date_sub($journee, date_interval_create_from_date_string('1 day'));
+$journee= date_format($journee, 'Y-m-d');
 
 
 

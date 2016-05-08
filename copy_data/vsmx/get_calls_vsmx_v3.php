@@ -12,7 +12,7 @@ echoP(" - Modifications pour tourner toutes les 15 minutes ");
 echoP(" - Ajout de l'option NO INSERT");
 
 // VARIABLES
-$no_inserts = 0; // 0 -> les inserts sont executes
+$no_inserts = 1; // 0 -> les inserts sont executes
                  // 1 -> il n'y a pas de modifications des bases
 
 $compteur_dbu = 1; // compteur pour le switch des differentes connexions à la DB
@@ -52,6 +52,13 @@ catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
 //etablissement connection PDO with DevWeb pour les REPLACE
 try {$dbr= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
 catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
+
+
+
+//etablissement connection PDO with C170 pour le tracking des journées
+try {$db_vesnet= new PDO("mysql:host=10.10.10.111;dbname=vesnet", 'root', 'vesnet@home');}
+catch(PDOException $e){echo getcwd(); echo $e->getMessage();}
+
 
 //etablissement 8 connection PDO with DevWeb for UPDATES
 try {$dbu1= new PDO("mysql:host=10.10.10.111;dbname=voipswitch_all", 'root', 'vesnet@home');}
@@ -110,6 +117,7 @@ foreach ($liste_des_vsm as $vsm) // Boucle pour chaque VSM
 {
   $j++;
   $inserted_query = 0;
+  $insert_start_time = microtime(true);
   //if($j > 2){ exit("j = $j") ;}
   echo "<p>".$vsm['vsm_name']." : ".$vsm['ip_adresse']."</p>";
   $dbh_host = $vsm['ip_adresse'];
@@ -406,6 +414,14 @@ foreach ($liste_des_vsm as $vsm) // Boucle pour chaque VSM
     // echo "</p>";
   } // END foreach ($calls_dump as $calls_line)
   //echo "juste ici : $i tours"; exit("j = $j");
+
+  $time_needed = number_format(( microtime(true) - $insert_start_time), 2);
+
+  $comment = "IP : $dbh_host ## DB : $dbh_name";
+
+  // stock la journée traitée dans la base pour chaque machine
+  $query = "REPLACE INTO `track_data_copy` (`date`, `server_name`, `timestamp`, `nb_cdr_inserted`, `time_needed`, `comment`) VALUES ('$journee', '".$vsm['vsm_name']."', CURRENT_TIMESTAMP, '$inserted_query', '$time_needed', '$comment' );";
+  echo "<p>$query</p>";
 
   echo "<p>Inserted Queries : $inserted_query</p>";
 } // END foreach ($liste_des_vsm as $vsm) Boucle pour chaque VSM

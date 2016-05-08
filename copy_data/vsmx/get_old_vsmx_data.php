@@ -40,7 +40,7 @@ else
 
 $content=file_get_contents("http://10.10.10.111/CDRstore/copy_data/vsmx/get_calls_vsmx_v3.php?journee=$journee");
 
-echo "Get Latest CSVs : "; echo  $content;
+echo "<p>Get Latest CDRs : <p>"; echo  "<div>$content</div>";
 
 
 

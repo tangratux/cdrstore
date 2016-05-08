@@ -12,7 +12,7 @@ echoP(" - Modifications pour tourner toutes les 15 minutes ");
 echoP(" - Ajout de l'option NO INSERT");
 
 // VARIABLES
-$no_inserts = 1; // 0 -> les inserts sont executes
+$no_inserts = 0; // 0 -> les inserts sont executes
                  // 1 -> il n'y a pas de modifications des bases
 
 $compteur_dbu = 1; // compteur pour le switch des differentes connexions à la DB
@@ -417,11 +417,12 @@ foreach ($liste_des_vsm as $vsm) // Boucle pour chaque VSM
 
   $time_needed = number_format(( microtime(true) - $insert_start_time), 2);
 
-  $comment = "IP : $dbh_host ## DB : $dbh_name";
+  $comment = "Source IP : $dbh_host ## DB : $dbh_name";
 
   // stock la journée traitée dans la base pour chaque machine
   $query = "REPLACE INTO `track_data_copy` (`date`, `server_name`, `timestamp`, `nb_cdr_inserted`, `time_needed`, `comment`) VALUES ('$journee', '".$vsm['vsm_name']."', CURRENT_TIMESTAMP, '$inserted_query', '$time_needed', '$comment' );";
-  echo "<p>$query</p>";
+  //echo "<p>$query</p>";
+  if(($db_vesnet->query($query)) === FALSE){echo "<p>TRACKING DATE NOK : QUERY : $query</p>"; exit("ERROR sur DELETE table `vesnet`.`track_data_copy`. Verifier l'acces à la base ou si la table existe !");}
 
   echo "<p>Inserted Queries : $inserted_query</p>";
 } // END foreach ($liste_des_vsm as $vsm) Boucle pour chaque VSM
